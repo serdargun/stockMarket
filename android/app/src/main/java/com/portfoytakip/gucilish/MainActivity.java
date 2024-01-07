@@ -1,4 +1,4 @@
-package com.stockmarket;
+package com.portfoytakip.gucilish;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

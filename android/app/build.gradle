@@ -73,9 +73,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.stockmarket"
+    namespace "com.portfoytakip.gucilish"
     defaultConfig {
-        applicationId "com.stockmarket"
+        applicationId "com.portfoytakip.gucilish"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

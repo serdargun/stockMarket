@@ -1,4 +1,4 @@
-package com.stockmarket;
+package com.portfoytakip.gucilish;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
