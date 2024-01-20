@@ -6,7 +6,7 @@ import {useNavigation} from '@react-navigation/native';
 import {styles} from './Header.styles';
 import {HeaderProps} from './Header.types';
 
-export default function Header({type, setVisible}: HeaderProps) {
+export default function Header({type = 'screen', setVisible}: HeaderProps) {
   const navigation = useNavigation();
 
   const leftButtonIcon = type === 'modal' ? 'close' : 'chevron-back';

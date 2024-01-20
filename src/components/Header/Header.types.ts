@@ -1,4 +1,4 @@
 export interface HeaderProps {
-  type: 'modal' | 'screen';
+  type?: 'modal' | 'screen';
   setVisible?: (visible: boolean) => void;
 }

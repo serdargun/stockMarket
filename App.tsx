@@ -1,12 +1,36 @@
 import axios from 'axios';
-import React, {useEffect} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {storage} from './src/helpers';
-import Home from './src/features/Home';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import AddStock from './src/features/AddStock';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {AddStock, Home, Onboarding, Profile, SignIn} from './src/features';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
+import {LoadingIndicator} from './src/components';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {colors} from './src/constants';
+
+GoogleSignin.configure({
+  webClientId:
+    '777834468989-21hjes32jevmjre4to3nb92tpmb2ioj9.apps.googleusercontent.com',
+});
 
 function App(): JSX.Element {
+  const [loading, setLoading] = useState(true);
+  const [authenticatedUser, setAuthenticatedUser] = useState(null);
+
+  function onAuthStateChanged(user) {
+    setAuthenticatedUser(user);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+
+    return subscriber;
+  }, []);
+
   useEffect(() => {
     const getStocks = async () => {
       const collectApi = axios.create({
@@ -22,7 +46,7 @@ function App(): JSX.Element {
         storage.set('stocks', JSON.stringify(response.data.result));
       });
     };
-    const stocks = JSON.parse(storage.getString('stocks'));
+    //const stocks = JSON.parse(storage.getString('stocks'));
     //console.log(JSON.stringify(stocks, null, 2));
     //const founded = stocks.find(stock => stock.code === 'FROTO');
     //console.log(founded);
@@ -31,14 +55,58 @@ function App(): JSX.Element {
 
   const Stack = createNativeStackNavigator();
 
-  return (
+  return !loading ? (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="AddStock" component={AddStock} />
+        {!authenticatedUser ? (
+          <Fragment>
+            <Stack.Screen name="Onboarding" component={Onboarding} />
+            <Stack.Screen name="SignIn" component={SignIn} />
+          </Fragment>
+        ) : (
+          <Stack.Screen name="app" component={AppStack} />
+        )}
       </Stack.Navigator>
     </NavigationContainer>
+  ) : (
+    <LoadingIndicator fullPage />
   );
 }
 
 export default App;
+
+const TabStack = () => {
+  const Tab = createBottomTabNavigator();
+
+  return (
+    <Tab.Navigator
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName;
+          if (route.name === 'Home') {
+            iconName = 'home';
+          } else if (route.name === 'Profile') {
+            iconName = 'user';
+          }
+          return <Icon name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: 'gray',
+        headerShown: false,
+        tabBarShowLabel: false,
+      })}>
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Profile" component={Profile} />
+    </Tab.Navigator>
+  );
+};
+
+const AppStack = () => {
+  const Stack = createNativeStackNavigator();
+  return (
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="TabStack" component={TabStack} />
+      <Stack.Screen name="AddStock" component={AddStock} />
+    </Stack.Navigator>
+  );
+};

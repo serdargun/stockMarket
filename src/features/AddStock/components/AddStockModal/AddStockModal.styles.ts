@@ -8,7 +8,8 @@ export const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   container: {flex: 1, justifyContent: 'space-between'},
-  stockCodeText: {textAlign: 'center', fontSize: 26, fontWeight: '400'},
+  stockCodeText: {textAlign: 'center', fontSize: 36, fontWeight: '500'},
+  stockPriceText: {textAlign: 'center', fontSize: 28, fontWeight: '400'},
   stockInput: {
     fontSize: 50,
     color: colors.quaternary,

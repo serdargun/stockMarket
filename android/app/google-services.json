@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "777834468989",
+    "project_id": "portfoytakip-fcf9c",
+    "storage_bucket": "portfoytakip-fcf9c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777834468989:android:0161a4fd68dace1f814314",
+        "android_client_info": {
+          "package_name": "com.portfoytakip.gucilish"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "777834468989-3ti7f8p55kfnpskp38jlpgpphv43iumr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.portfoytakip.gucilish",
+            "certificate_hash": "f7cf8dd099c3e527db07943b3de0cc0b5c8523a9"
+          }
+        },
+        {
+          "client_id": "777834468989-21hjes32jevmjre4to3nb92tpmb2ioj9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2Y6uELUV6L7nnkkLp_mFk_G9YQD1btm8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "777834468989-21hjes32jevmjre4to3nb92tpmb2ioj9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "777834468989-2jvdntk9ovog88429thmqnibh35pc70n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.portfoytakip.gucilish"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
