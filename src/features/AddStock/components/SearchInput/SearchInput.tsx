@@ -14,6 +14,7 @@ export default function SearchInput({value, setValue}: SearchInputProps) {
         value={value}
         onChangeText={setValue}
         style={styles.input}
+        autoFocus
       />
     </View>
   );
