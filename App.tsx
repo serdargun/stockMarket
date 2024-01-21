@@ -4,7 +4,14 @@ import {storage} from './src/helpers';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {AddStock, Home, Onboarding, Profile, SignIn} from './src/features';
+import {
+  AddStock,
+  Home,
+  Onboarding,
+  Profile,
+  SignIn,
+  SignUp,
+} from './src/features';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import {LoadingIndicator} from './src/components';
@@ -62,6 +69,7 @@ function App(): JSX.Element {
           <Fragment>
             <Stack.Screen name="Onboarding" component={Onboarding} />
             <Stack.Screen name="SignIn" component={SignIn} />
+            <Stack.Screen name="SignUp" component={SignUp} />
           </Fragment>
         ) : (
           <Stack.Screen name="app" component={AppStack} />

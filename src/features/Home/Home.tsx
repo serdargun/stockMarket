@@ -3,11 +3,8 @@ import React, {useEffect, useState} from 'react';
 import {LoadingIndicator, PieChart} from '../../components';
 import {StockList} from './components';
 import {useIsFocused} from '@react-navigation/native';
-import {storage} from '../../helpers';
-import firestore, {
-  FirebaseFirestoreTypes,
-} from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
+import {firestore, storage} from '../../helpers';
+import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {styles} from './Home.styles';
 
 export default function Home() {
@@ -25,21 +22,10 @@ export default function Home() {
     }
   }, [isFocused]);
 
-  const getUserPortfolios = () => {
-    const userUid = auth().currentUser?.uid;
-    let items: FirebaseFirestoreTypes.DocumentData[] = [];
-    firestore()
-      .collection('portfolio')
-      .where('userUid', '==', userUid)
-      .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(queryDocumentSnapshot => {
-          items = [...items, queryDocumentSnapshot.data()];
-          console.log(queryDocumentSnapshot.data());
-        });
-        setSelectedPortfolio(items[0]);
-        setPortfolios(items);
-      });
+  const getUserPortfolios = async () => {
+    const querySnapshot = await firestore.getUserPortfolios();
+    setSelectedPortfolio(querySnapshot.docs[0].data());
+    setPortfolios(querySnapshot.docs);
   };
 
   const getPercentages = () => {
