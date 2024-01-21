@@ -5,13 +5,17 @@ import {
   TextInput,
   KeyboardAvoidingView,
   View,
+  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
 import {Button, Header} from '../../../../components';
 import {colors, pieChartColors} from '../../../../constants';
 import {styles} from './AddStockModal.styles';
 import {AddStockModalProps} from './AddStockModal.types';
-import firestore from '@react-native-firebase/firestore';
+import {useAtom} from 'jotai';
+import {selectedPortfolioAtom} from '../../../../../App';
+import {firestore} from '../../../../helpers';
+import {useNavigation} from '@react-navigation/native';
 
 export default function AddStockModal({
   visible,
@@ -19,8 +23,12 @@ export default function AddStockModal({
   selectedStock,
 }: AddStockModalProps) {
   const [stockCount, setStockCount] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [selectedPortfolio] = useAtom(selectedPortfolioAtom);
 
-  const onAddPress = () => {
+  const navigation = useNavigation();
+
+  const onAddPress = async () => {
     const color =
       pieChartColors[Math.round(Math.random() * pieChartColors.length)];
     const data = {
@@ -29,14 +37,15 @@ export default function AddStockModal({
       cost: selectedStock.lastprice,
       color,
     };
-    firestore()
-      .collection('portfolio')
-      .doc('zYPpvqRw6Q5b7JnO1IHy')
-      .update({
-        list: firestore.FieldValue.arrayUnion(data),
-      })
-      .then(() => console.log('updated'));
+    setLoading(true);
+    try {
+      await firestore.updateUserPortfolio(selectedPortfolio?.id, data);
+    } catch (error) {
+      Alert.alert('Oops daha sonra tekrar deneyiniz.');
+    }
+    setLoading(false);
     setVisible(false);
+    navigation.navigate('Home');
   };
 
   return (
@@ -62,7 +71,11 @@ export default function AddStockModal({
               />
               <Text style={styles.stockUnitText}>lot</Text>
             </View>
-            <Button label="Hisseyi Ekle" onPress={onAddPress} />
+            <Button
+              label="Hisseyi Ekle"
+              onPress={onAddPress}
+              loading={loading}
+            />
           </View>
         </SafeAreaView>
       </KeyboardAvoidingView>

@@ -3,11 +3,11 @@ import React, {useEffect, useState} from 'react';
 import {storage} from '../../helpers';
 import {AddStockModal, SearchInput, StockItem} from './components';
 import {Header} from '../../components';
-import {colors} from '../../constants';
+import {styles} from './AddStock.styles';
+
+const stocks = JSON.parse(storage.getString('stocks'));
 
 export default function AddStock() {
-  const stocks = JSON.parse(storage.getString('stocks'));
-
   const [searchVal, setSearchVal] = useState('');
   const [foundedStocks, setFoundedStocks] = useState([]);
   const [addStockVisible, setAddStockVisible] = useState(false);
@@ -16,7 +16,7 @@ export default function AddStock() {
   useEffect(() => {
     if (searchVal.length > 0) {
       const filteredStocks = stocks.filter(stock =>
-        stock.code.includes(searchVal),
+        stock.code.includes(searchVal.toUpperCase()),
       );
       setFoundedStocks(filteredStocks);
     } else {
@@ -37,7 +37,7 @@ export default function AddStock() {
   const hasSelectedStock = !!selectedStock;
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: colors.tertiary}}>
+    <SafeAreaView style={styles.container}>
       <Header type="screen" />
       <SearchInput value={searchVal} setValue={setSearchVal} />
       <FlatList

@@ -17,11 +17,16 @@ import auth from '@react-native-firebase/auth';
 import {LoadingIndicator} from './src/components';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {colors} from './src/constants';
+import {Provider, atom} from 'jotai';
+import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 
 GoogleSignin.configure({
   webClientId:
     '777834468989-21hjes32jevmjre4to3nb92tpmb2ioj9.apps.googleusercontent.com',
 });
+
+export const selectedPortfolioAtom =
+  atom<FirebaseFirestoreTypes.DocumentData | null>(null);
 
 function App(): JSX.Element {
   const [loading, setLoading] = useState(true);
@@ -63,19 +68,21 @@ function App(): JSX.Element {
   const Stack = createNativeStackNavigator();
 
   return !loading ? (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false}}>
-        {!authenticatedUser ? (
-          <Fragment>
-            <Stack.Screen name="Onboarding" component={Onboarding} />
-            <Stack.Screen name="SignIn" component={SignIn} />
-            <Stack.Screen name="SignUp" component={SignUp} />
-          </Fragment>
-        ) : (
-          <Stack.Screen name="app" component={AppStack} />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          {!authenticatedUser ? (
+            <Fragment>
+              <Stack.Screen name="Onboarding" component={Onboarding} />
+              <Stack.Screen name="SignIn" component={SignIn} />
+              <Stack.Screen name="SignUp" component={SignUp} />
+            </Fragment>
+          ) : (
+            <Stack.Screen name="app" component={AppStack} />
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   ) : (
     <LoadingIndicator fullPage />
   );

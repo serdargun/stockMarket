@@ -1,5 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import {StockType} from '../features/AddStock/components/AddStockModal/AddStockModal.types';
 
 const handleWriteDefaultPortfolio = async (userUid: string) => {
   const userPortfolios = await firestore()
@@ -32,4 +33,17 @@ const getUserPortfolios = async () => {
   return querySnapshot;
 };
 
-export default {handleWriteDefaultPortfolio, getUserPortfolios};
+const updateUserPortfolio = async (portfolioId: string, data: StockType) => {
+  await firestore()
+    .collection('portfolio')
+    .doc(portfolioId)
+    .update({
+      list: firestore.FieldValue.arrayUnion(data),
+    });
+};
+
+export default {
+  handleWriteDefaultPortfolio,
+  getUserPortfolios,
+  updateUserPortfolio,
+};

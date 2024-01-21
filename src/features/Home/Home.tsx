@@ -6,13 +6,16 @@ import {useIsFocused} from '@react-navigation/native';
 import {firestore, storage} from '../../helpers';
 import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {styles} from './Home.styles';
+import {useAtom} from 'jotai';
+import {selectedPortfolioAtom} from '../../../App';
 
 export default function Home() {
   const [portfolios, setPortfolios] = useState<
     FirebaseFirestoreTypes.DocumentData[]
   >([]);
-  const [selectedPortfolio, setSelectedPortfolio] =
-    useState<FirebaseFirestoreTypes.DocumentData | null>(null);
+  const [selectedPortfolio, setSelectedPortfolio] = useAtom(
+    selectedPortfolioAtom,
+  );
 
   const isFocused = useIsFocused();
 
@@ -24,7 +27,10 @@ export default function Home() {
 
   const getUserPortfolios = async () => {
     const querySnapshot = await firestore.getUserPortfolios();
-    setSelectedPortfolio(querySnapshot.docs[0].data());
+    setSelectedPortfolio({
+      id: querySnapshot.docs[0].id,
+      ...querySnapshot.docs[0].data(),
+    });
     setPortfolios(querySnapshot.docs);
   };
 
