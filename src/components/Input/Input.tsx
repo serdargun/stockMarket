@@ -1,7 +1,8 @@
-import {View, Text} from 'react-native';
+import {View} from 'react-native';
 import React from 'react';
 import {TextInput} from 'react-native';
 import {styles} from './Input.styles';
+import {InputProps} from './Input.types';
 
 export default function Input({
   value,
@@ -9,7 +10,7 @@ export default function Input({
   placeholder,
   keyboardType,
   secureTextEntry,
-}) {
+}: InputProps) {
   return (
     <View style={styles.container}>
       <TextInput

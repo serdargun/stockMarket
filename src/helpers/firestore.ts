@@ -8,20 +8,17 @@ const handleWriteDefaultPortfolio = async (userUid: string) => {
     .where('userUid', '==', userUid)
     .get();
   if (userPortfolios.size === 0) {
-    writeDefaultPortfolio(userUid);
+    writePortfolio(userUid, 'Portföyüm');
   }
 };
 
-const writeDefaultPortfolio = (userUid: string) => {
+const writePortfolio = async (userUid: string, portfolioName: string) => {
   const data = {
     list: [],
     userUid,
-    name: 'Portföyüm',
+    name: portfolioName,
   };
-  firestore()
-    .collection('portfolio')
-    .add(data)
-    .then(() => console.log('added'));
+  await firestore().collection('portfolio').add(data);
 };
 
 const getUserPortfolios = async () => {
@@ -42,8 +39,14 @@ const updateUserPortfolio = async (portfolioId: string, data: StockType) => {
     });
 };
 
+const removePortfolio = async (portfolioId: string) => {
+  await firestore().collection('portfolio').doc(portfolioId).delete();
+};
+
 export default {
   handleWriteDefaultPortfolio,
+  writePortfolio,
   getUserPortfolios,
   updateUserPortfolio,
+  removePortfolio,
 };

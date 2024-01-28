@@ -22,4 +22,7 @@ export const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '500',
   },
+  buttonContainer: {
+    paddingHorizontal: 20,
+  },
 });

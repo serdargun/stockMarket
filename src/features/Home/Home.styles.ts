@@ -6,8 +6,13 @@ export const styles = StyleSheet.create({
   },
   portfolioName: {
     textAlign: 'center',
-    paddingBottom: 10,
     fontSize: 18,
     fontWeight: '500',
+  },
+  heading: {
+    paddingBottom: 10,
+    flexDirection: 'row',
+    alignSelf: 'center',
+    alignItems: 'center',
   },
 });

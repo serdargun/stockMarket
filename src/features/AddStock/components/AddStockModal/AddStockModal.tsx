@@ -71,11 +71,13 @@ export default function AddStockModal({
               />
               <Text style={styles.stockUnitText}>lot</Text>
             </View>
-            <Button
-              label="Hisseyi Ekle"
-              onPress={onAddPress}
-              loading={loading}
-            />
+            <View style={styles.buttonContainer}>
+              <Button
+                label="Hisseyi Ekle"
+                onPress={onAddPress}
+                loading={loading}
+              />
+            </View>
           </View>
         </SafeAreaView>
       </KeyboardAvoidingView>

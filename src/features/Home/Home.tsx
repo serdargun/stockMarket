@@ -1,13 +1,15 @@
-import {SafeAreaView, Text, View} from 'react-native';
+import {SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {LoadingIndicator, PieChart} from '../../components';
-import {StockList} from './components';
+import {PortfoliosModal, StockList} from './components';
 import {useIsFocused} from '@react-navigation/native';
 import {firestore, storage} from '../../helpers';
 import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {styles} from './Home.styles';
 import {useAtom} from 'jotai';
 import {selectedPortfolioAtom} from '../../../App';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {colors} from '../../constants';
 
 export default function Home() {
   const [portfolios, setPortfolios] = useState<
@@ -16,6 +18,7 @@ export default function Home() {
   const [selectedPortfolio, setSelectedPortfolio] = useAtom(
     selectedPortfolioAtom,
   );
+  const [portfoliosVisible, setPortfoliosVisible] = useState(false);
 
   const isFocused = useIsFocused();
 
@@ -56,10 +59,20 @@ export default function Home() {
   return selectedPortfolio ? (
     <View style={styles.container}>
       <SafeAreaView>
-        <Text style={styles.portfolioName}>{selectedPortfolio.name}</Text>
+        <TouchableOpacity
+          onPress={() => setPortfoliosVisible(true)}
+          activeOpacity={0.8}
+          style={styles.heading}>
+          <Text style={styles.portfolioName}>{selectedPortfolio.name}</Text>
+          <Icon name={'chevron-down-outline'} size={18} color={colors.black} />
+        </TouchableOpacity>
       </SafeAreaView>
       <PieChart percentages={getPercentages()} />
       <StockList percentages={getPercentages()} />
+      <PortfoliosModal
+        visible={portfoliosVisible}
+        setVisible={setPortfoliosVisible}
+      />
     </View>
   ) : (
     <LoadingIndicator fullPage />

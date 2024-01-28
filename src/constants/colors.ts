@@ -5,6 +5,7 @@ export const colors = {
   quaternary: '#162B69',
   white: '#FFFFFF',
   black: '#000000',
+  error: '#BF3131',
 };
 
 export const pieChartColors = [
