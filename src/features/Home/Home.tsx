@@ -3,13 +3,19 @@ import React, {useEffect, useState} from 'react';
 import {LoadingIndicator, PieChart} from '../../components';
 import {PortfoliosModal, StockList} from './components';
 import {useIsFocused} from '@react-navigation/native';
-import {firestore, storage} from '../../helpers';
+import {common, firestore} from '../../helpers';
 import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {styles} from './Home.styles';
 import {useAtom} from 'jotai';
 import {selectedPortfolioAtom} from '../../../App';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {colors} from '../../constants';
+import {useMMKVString} from 'react-native-mmkv';
+import {
+  LiveStock,
+  PortfolioStockWithPrice,
+  PortfolioStockWithPriceAndPercent,
+} from './Home.types';
 
 export default function Home() {
   const [portfolios, setPortfolios] = useState<
@@ -19,41 +25,56 @@ export default function Home() {
     selectedPortfolioAtom,
   );
   const [portfoliosVisible, setPortfoliosVisible] = useState(false);
-
+  const [stocks = '[]', setStocks] = useMMKVString('stocks');
   const isFocused = useIsFocused();
 
   useEffect(() => {
+    const getUserPortfolios = async () => {
+      const querySnapshot = await firestore.getUserPortfolios();
+      setSelectedPortfolio({
+        id: querySnapshot.docs[0].id,
+        ...querySnapshot.docs[0].data(),
+      });
+      setPortfolios(querySnapshot.docs);
+    };
+
     if (isFocused) {
       getUserPortfolios();
     }
   }, [isFocused]);
 
-  const getUserPortfolios = async () => {
-    const querySnapshot = await firestore.getUserPortfolios();
-    setSelectedPortfolio({
-      id: querySnapshot.docs[0].id,
-      ...querySnapshot.docs[0].data(),
-    });
-    setPortfolios(querySnapshot.docs);
-  };
-
   const getPercentages = () => {
-    const stocks = JSON.parse(storage.getString('stocks'));
+    const liveStocks = JSON.parse(stocks);
     const portfolioStocksWithPrice = selectedPortfolio?.list.map(
       (item: FirebaseFirestoreTypes.DocumentData) => {
-        const stock = stocks.find(stock => stock.code === item.code);
-        return {...item, price: stock.lastprice};
+        const stock = liveStocks.find(
+          (liveStock: LiveStock) => liveStock.code === item.code,
+        );
+        return {
+          ...item,
+          price: common.convertFormattedCurrencyToBare(stock.price),
+        };
       },
     );
-    const percentages = portfolioStocksWithPrice.map((item, index) => {
-      const total = portfolioStocksWithPrice.reduce((acc, item) => {
-        return acc + item.price * item.lot;
-      }, 0);
-      const percentage = ((item.price * item.lot) / total) * 100;
-      return {percent: percentage, id: index, ...item};
-    });
+    const percentages = portfolioStocksWithPrice.map(
+      (stock: PortfolioStockWithPrice, index: number) => {
+        const total = portfolioStocksWithPrice.reduce(
+          (acc: number, item: PortfolioStockWithPrice) => {
+            return acc + item.price * item.lot;
+          },
+          0,
+        );
+        const percentage = ((stock.price * stock.lot) / total) * 100;
+        return {percent: percentage, id: index, ...stock};
+      },
+    );
 
-    return percentages.sort((a, b) => b.percent - a.percent);
+    return percentages.sort(
+      (
+        a: PortfolioStockWithPriceAndPercent,
+        b: PortfolioStockWithPriceAndPercent,
+      ) => b.percent - a.percent,
+    );
   };
 
   return selectedPortfolio ? (

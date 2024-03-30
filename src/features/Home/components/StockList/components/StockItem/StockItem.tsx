@@ -1,38 +1,47 @@
-import {View, Text} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {colors} from '../../../../../../constants';
+import {styles} from './StockItem.styles';
+import {useNavigation} from '@react-navigation/native';
+import {StockItemProps} from './StockItem.types';
 
-export default function StockItem({data, percentage}) {
+export default function StockItem({data}: StockItemProps) {
+  const navigation = useNavigation();
+
+  const onItemPress = () => {
+    navigation.navigate('StockDetail');
+  };
+
+  const getStockIncome = () => {
+    const income = (data.price - data.cost) * data.lot;
+    return income.toFixed(2);
+  };
+
+  const getStockIncomePercentage = () => {
+    const percentage = ((data.price - data.cost) / data.cost) * 100;
+    //console.log(data.price, data.cost);
+    return percentage.toFixed(2);
+  };
+
+  const isNegative = data.price - data.cost < 0;
+  const isEqual = data.price - data.cost === 0;
+
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingVertical: 20,
-        borderBottomWidth: 1,
-        borderBottomColor: colors.tertiary,
-      }}>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <View
-          style={{
-            width: 15,
-            height: 15,
-            backgroundColor: data.color,
-            borderRadius: 20,
-            marginRight: 10,
-          }}
-        />
-        <Text style={{fontWeight: '500'}}>{data.code}</Text>
+    <TouchableOpacity onPress={onItemPress} style={styles.container}>
+      <View style={styles.leftColumn}>
+        <View style={[styles.coloredBullet, {backgroundColor: data.color}]} />
+        <View>
+          <Text style={styles.stockCode}>{data.code}</Text>
+          <Text style={styles.currentPrice}>{data.price}₺</Text>
+        </View>
       </View>
-      <Text style={{fontSize: 18, fontWeight: '600'}}>
-        {percentage.toFixed(1)}%
+      <Text
+        style={[
+          styles.rightColumnInfoText,
+          isNegative && styles.negativeTextStyle,
+          isEqual && styles.equalTextStyle,
+        ]}>
+        {getStockIncome()}₺(%{getStockIncomePercentage()})
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 }

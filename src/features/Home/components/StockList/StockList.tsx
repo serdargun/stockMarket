@@ -5,17 +5,16 @@ import Icon from 'react-native-vector-icons/Entypo';
 import {colors} from '../../../../constants';
 import {styles} from './StockList.styles';
 import {StockItem} from './components';
+import {StockListProps} from './StockList.types';
 
-export default function StockList({percentages}) {
+export default function StockList({percentages}: StockListProps) {
   const navigation = useNavigation();
 
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
         data={percentages}
-        renderItem={({item, index}) => (
-          <StockItem data={item} percentage={percentages[index].percent} />
-        )}
+        renderItem={({item}) => <StockItem data={item} />}
         contentContainerStyle={styles.listContainer}
       />
       <TouchableOpacity

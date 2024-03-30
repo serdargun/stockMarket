@@ -13,6 +13,6 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 5,
     fontWeight: '600',
-    color: colors.secondary,
+    color: colors.primary,
   },
 });

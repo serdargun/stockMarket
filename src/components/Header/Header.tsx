@@ -26,7 +26,7 @@ export default function Header({type = 'screen', setVisible}: HeaderProps) {
         onPress={onLeftButtonPress}
         hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
         style={styles.leftButton}>
-        <Icon name={leftButtonIcon} size={24} color={colors.secondary} />
+        <Icon name={leftButtonIcon} size={24} color={colors.primary} />
         <Text style={styles.leftButtonLabel}>{leftButtonLabel}</Text>
       </TouchableOpacity>
     </View>

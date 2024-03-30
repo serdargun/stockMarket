@@ -1,8 +1,9 @@
 import {View, Text, TouchableOpacity} from 'react-native';
 import React, {Fragment} from 'react';
 import {styles} from './StockItem.styles';
+import {StockItemProps} from './StockItem.types';
 
-export default function StockItem({data, onItemPress}) {
+export default function StockItem({data, onItemPress}: StockItemProps) {
   return (
     <Fragment>
       <TouchableOpacity

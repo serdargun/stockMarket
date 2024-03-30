@@ -1,6 +1,7 @@
 import React from 'react';
 import {SafeAreaView} from 'react-native';
 import {Path, Svg} from 'react-native-svg';
+import {PieChartProps} from './PieChart.types';
 
 const getXY = (percent: number, radius: number) => {
   const x = Math.cos((2 * Math.PI * percent) / 100) * radius;
@@ -8,8 +9,7 @@ const getXY = (percent: number, radius: number) => {
   return {x, y};
 };
 
-export default function PieChart({percentages}) {
-  console.log(percentages);
+export default function PieChart({percentages}: PieChartProps) {
   const radius = 100;
   let cumulativePercent = 0;
 

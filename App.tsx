@@ -1,6 +1,5 @@
-import axios from 'axios';
 import React, {Fragment, useEffect, useState} from 'react';
-import {storage} from './src/helpers';
+import {firestore, storage} from './src/helpers';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -11,9 +10,10 @@ import {
   Profile,
   SignIn,
   SignUp,
+  StockDetail,
 } from './src/features';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import auth from '@react-native-firebase/auth';
+import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import {LoadingIndicator} from './src/components';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {colors} from './src/constants';
@@ -30,9 +30,10 @@ export const selectedPortfolioAtom =
 
 function App(): JSX.Element {
   const [loading, setLoading] = useState(true);
-  const [authenticatedUser, setAuthenticatedUser] = useState(null);
+  const [authenticatedUser, setAuthenticatedUser] =
+    useState<FirebaseAuthTypes.User | null>(null);
 
-  function onAuthStateChanged(user) {
+  function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
     setAuthenticatedUser(user);
     setLoading(false);
   }
@@ -44,25 +45,11 @@ function App(): JSX.Element {
   }, []);
 
   useEffect(() => {
-    const getStocks = async () => {
-      const collectApi = axios.create({
-        baseURL: 'https://api.collectapi.com/economy',
-        headers: {
-          Authorization: 'apikey 0LL5TLxf2M8TlBFcCF7nae:6weRak1s9r8LJBexJx0054',
-          'Content-Type': 'application/json',
-        },
-      });
-
-      collectApi.get('/hisseSenedi').then(response => {
-        console.log(response.data.result);
-        storage.set('stocks', JSON.stringify(response.data.result));
-      });
+    const getStockList = async () => {
+      const stockList = await firestore.getStockList();
+      storage.set('stocks', JSON.stringify(stockList));
     };
-    //const stocks = JSON.parse(storage.getString('stocks'));
-    //console.log(JSON.stringify(stocks, null, 2));
-    //const founded = stocks.find(stock => stock.code === 'FROTO');
-    //console.log(founded);
-    //getStocks();
+    getStockList();
   }, []);
 
   const Stack = createNativeStackNavigator();
@@ -93,18 +80,23 @@ export default App;
 const TabStack = () => {
   const Tab = createBottomTabNavigator();
 
+  const getIconName = (route: string) => {
+    if (route === 'Home') {
+      return 'home';
+    } else if (route === 'Profile') {
+      return 'user';
+    }
+    return '';
+  };
+
+  const renderTabBarIcon = (route: string) => {
+    return <Icon name={getIconName(route)} size={20} color={colors.primary} />;
+  };
+
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color, size}) => {
-          let iconName;
-          if (route.name === 'Home') {
-            iconName = 'home';
-          } else if (route.name === 'Profile') {
-            iconName = 'user';
-          }
-          return <Icon name={iconName} size={size} color={color} />;
-        },
+        tabBarIcon: () => renderTabBarIcon(route.name),
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
@@ -122,6 +114,7 @@ const AppStack = () => {
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="TabStack" component={TabStack} />
       <Stack.Screen name="AddStock" component={AddStock} />
+      <Stack.Screen name="StockDetail" component={StockDetail} />
     </Stack.Navigator>
   );
 };

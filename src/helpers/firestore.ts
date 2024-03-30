@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import {StockType} from '../features/AddStock/components/AddStockModal/AddStockModal.types';
+import {PortfolioStock} from '../features/Home/Home.types';
 
 const handleWriteDefaultPortfolio = async (userUid: string) => {
   const userPortfolios = await firestore()
@@ -30,7 +30,10 @@ const getUserPortfolios = async () => {
   return querySnapshot;
 };
 
-const updateUserPortfolio = async (portfolioId: string, data: StockType) => {
+const updateUserPortfolio = async (
+  portfolioId: string,
+  data: PortfolioStock,
+) => {
   await firestore()
     .collection('portfolio')
     .doc(portfolioId)
@@ -43,10 +46,20 @@ const removePortfolio = async (portfolioId: string) => {
   await firestore().collection('portfolio').doc(portfolioId).delete();
 };
 
+const getStockList = async () => {
+  const querySnapshot = await firestore()
+    .collection('stocks')
+    .doc('stockList')
+    .get();
+
+  return querySnapshot.data()?.stockList;
+};
+
 export default {
   handleWriteDefaultPortfolio,
   writePortfolio,
   getUserPortfolios,
   updateUserPortfolio,
   removePortfolio,
+  getStockList,
 };

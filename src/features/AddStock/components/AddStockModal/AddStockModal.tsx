@@ -34,7 +34,7 @@ export default function AddStockModal({
     const data = {
       code: selectedStock.code,
       lot: parseInt(stockCount, 10),
-      cost: selectedStock.lastprice,
+      cost: parseFloat(selectedStock.price),
       color,
     };
     setLoading(true);
@@ -57,7 +57,7 @@ export default function AddStockModal({
             <View>
               <Text style={styles.stockCodeText}>{selectedStock.code}</Text>
               <Text style={styles.stockPriceText}>
-                {selectedStock.lastprice.toFixed(2)}₺
+                {parseFloat(selectedStock.price)}₺
               </Text>
             </View>
             <View>
