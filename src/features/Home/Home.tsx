@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {LoadingIndicator, PieChart} from '../../components';
 import {PortfoliosModal, StockList} from './components';
 import {useIsFocused} from '@react-navigation/native';
-import {common, firestore} from '../../helpers';
+import {common, firestore, storage} from '../../helpers';
 import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {styles} from './Home.styles';
 import {useAtom} from 'jotai';
@@ -31,10 +31,21 @@ export default function Home() {
   useEffect(() => {
     const getUserPortfolios = async () => {
       const querySnapshot = await firestore.getUserPortfolios();
-      setSelectedPortfolio({
-        id: querySnapshot.docs[0].id,
-        ...querySnapshot.docs[0].data(),
-      });
+      const selectedPortfolioId = storage.getString('selectedPortfolioId');
+      const foundedPortfolio = querySnapshot.docs.find(
+        doc => doc.id === selectedPortfolioId,
+      );
+      if (foundedPortfolio) {
+        setSelectedPortfolio({
+          id: foundedPortfolio.id,
+          ...foundedPortfolio.data(),
+        });
+      } else {
+        setSelectedPortfolio({
+          id: querySnapshot.docs[0].id,
+          ...querySnapshot.docs[0].data(),
+        });
+      }
       setPortfolios(querySnapshot.docs);
     };
 

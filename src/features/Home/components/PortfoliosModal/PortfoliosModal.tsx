@@ -13,7 +13,7 @@ import {
   PortfolioItemProps,
   PortfoliosModalProps,
 } from './PortfoliosModal.types';
-import {auth, firestore} from '../../../../helpers';
+import {auth, firestore, storage} from '../../../../helpers';
 import {colors} from '../../../../constants';
 import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {useAtom} from 'jotai';
@@ -80,6 +80,7 @@ const PortfolioItem = ({
       id: portfolio.id,
       ...portfolio.data(),
     });
+    storage.set('selectedPortfolioId', portfolio.id);
     setVisible(false);
   };
 
