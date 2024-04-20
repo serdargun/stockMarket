@@ -89,16 +89,21 @@ const TabStack = () => {
     return '';
   };
 
-  const renderTabBarIcon = (route: string) => {
-    return <Icon name={getIconName(route)} size={20} color={colors.primary} />;
+  const renderTabBarIcon = (route: string, focused: boolean) => {
+    return (
+      <Icon
+        name={getIconName(route)}
+        size={20}
+        color={focused ? colors.primary : colors.grey}
+      />
+    );
   };
 
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
-        tabBarIcon: () => renderTabBarIcon(route.name),
+        tabBarIcon: ({focused}) => renderTabBarIcon(route.name, focused),
         tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: 'gray',
         headerShown: false,
         tabBarShowLabel: false,
       })}>
