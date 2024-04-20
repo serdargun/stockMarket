@@ -16,6 +16,7 @@ import {useAtom} from 'jotai';
 import {selectedPortfolioAtom} from '../../../../../App';
 import {firestore} from '../../../../helpers';
 import {useNavigation} from '@react-navigation/native';
+import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 
 export default function AddStockModal({
   visible,
@@ -29,13 +30,17 @@ export default function AddStockModal({
   const navigation = useNavigation();
 
   const onAddPress = async () => {
-    const color =
-      pieChartColors[Math.round(Math.random() * pieChartColors.length)];
+    const portfolioColors = selectedPortfolio?.list.map(
+      (item: FirebaseFirestoreTypes.DocumentData) => item.color,
+    );
+    const availableColors = pieChartColors.filter(
+      color => !portfolioColors.includes(color),
+    );
     const data = {
       code: selectedStock.code,
       lot: parseInt(stockCount, 10),
       cost: parseFloat(selectedStock.price),
-      color,
+      color: availableColors[0],
     };
     setLoading(true);
     try {
