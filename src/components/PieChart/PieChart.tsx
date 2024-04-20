@@ -30,16 +30,18 @@ export default function PieChart({percentages}: PieChartProps) {
 
   return (
     <SafeAreaView>
-      <Svg
-        viewBox="-50 -100 200 200"
-        style={{
-          height: 200,
-          //transform: [{rotateZ: '-90deg'}],
-        }}>
-        {pathDataList.map((v, i) => {
-          return <Path key={i} d={v.d} fill={v.color} />;
-        })}
-      </Svg>
+      {pathDataList.length > 0 && (
+        <Svg
+          viewBox="-50 -100 200 200"
+          style={{
+            height: 200,
+            //transform: [{rotateZ: '-90deg'}],
+          }}>
+          {pathDataList.map((v, i) => {
+            return <Path key={i} d={v.d} fill={v.color} />;
+          })}
+        </Svg>
+      )}
     </SafeAreaView>
   );
 }
